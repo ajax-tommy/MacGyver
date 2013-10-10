@@ -38,7 +38,7 @@ angular.module("Mac").directive "macTooltip", [
         tip =
           if opts.inside then element else angular.element(document.body)
         tooltip = angular.element """<div class="tooltip #{opts.direction}"><div class="tooltip-message">#{text}</div></div>"""
-        $animate tooltip, tip
+        $animate.enter tooltip, tip
 
         # Only get element offset when not adding tooltip within the element.
         offset = if opts.inside then { top: 0, left: 0 } else element.offset()
