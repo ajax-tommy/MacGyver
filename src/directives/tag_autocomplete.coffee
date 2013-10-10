@@ -107,7 +107,7 @@ angular.module("Mac").directive "macTagAutocomplete", [
                   $scope.$apply ->
                     item = $scope.textInput
                     expression $scope.$parent, {$event, item}
-        , 0
+        , 0, false
 
         if useSource
           updateAutocompleteSource = ->
@@ -118,9 +118,8 @@ angular.module("Mac").directive "macTagAutocomplete", [
             $scope.autocompleteSource =
               (item for item in ($scope.source or []) when item[valueKey] in difference)
 
-          # Switch to use watchCollections when upgrading to AngularJS 1.2
-          $scope.$watch "selected", updateAutocompleteSource, true
-          $scope.$watch "source", updateAutocompleteSource, true
+          $scope.$watchCollection "selected", updateAutocompleteSource
+          $scope.$watchCollection "source", updateAutocompleteSource
 
         $scope.onKeyDown = ($event) ->
           stroke = $event.which or $event.keyCode
