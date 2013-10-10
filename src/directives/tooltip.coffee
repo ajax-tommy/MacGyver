@@ -13,9 +13,10 @@ Tooltip directive
 ###
 
 angular.module("Mac").directive "macTooltip", [
+  "$animate"
   "$timeout"
   "util"
-  ($timeout, util) ->
+  ($animate, $timeout, util) ->
     restrict: "A"
 
     link: (scope, element, attrs) ->
@@ -37,7 +38,7 @@ angular.module("Mac").directive "macTooltip", [
         tip =
           if opts.inside then element else angular.element(document.body)
         tooltip = angular.element """<div class="tooltip #{opts.direction}"><div class="tooltip-message">#{text}</div></div>"""
-        tip.append tooltip
+        $animate tooltip, tip
 
         # Only get element offset when not adding tooltip within the element.
         offset = if opts.inside then { top: 0, left: 0 } else element.offset()
@@ -75,14 +76,14 @@ angular.module("Mac").directive "macTooltip", [
             value = "#{value}px"
           tooltip.css key, value
 
-        tooltip.addClass "visible"
+        $animate.addClass tooltip, "visible"
         return true
 
       removeTip = (event) ->
         if tooltip?
-          tooltip.removeClass "visible"
+          $animate.removeClass tooltip, "visible"
           $timeout ->
-            tooltip.remove()
+            $animate.leave tooltip
           , 100, false
         return true
 
