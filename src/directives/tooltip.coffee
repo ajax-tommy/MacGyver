@@ -38,7 +38,8 @@ angular.module("Mac").directive "macTooltip", [
         tip =
           if opts.inside then element else angular.element(document.body)
         tooltip = angular.element """<div class="tooltip #{opts.direction}"><div class="tooltip-message">#{text}</div></div>"""
-        $animate.enter tooltip, tip
+        # Use append instead of enter to prevent digest cycle from firing
+        tip.append tooltip
 
         # Only get element offset when not adding tooltip within the element.
         offset = if opts.inside then { top: 0, left: 0 } else element.offset()
@@ -81,10 +82,11 @@ angular.module("Mac").directive "macTooltip", [
 
       removeTip = (event) ->
         if tooltip?
-          $animate.removeClass tooltip, "visible"
-          $timeout ->
-            $animate.leave tooltip
-          , 100, false
+          # Use removeClass instead of leave to prevent digest cycle
+          # from firing
+          $animate.removeClass tooltip, "visible", ->
+            tooltip.remove()
+            tooltip = null
         return true
 
       toggle = (event) ->
